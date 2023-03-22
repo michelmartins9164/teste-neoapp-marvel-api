@@ -1,12 +1,13 @@
-import React from "react";
-import Home from "./components/home";
+import React from 'react';
+
+import Home from './pages/home';
+import RoutesMap from './routes';
+import Routes from './routes';
 
 
 function App() {
-  return ( 
-    <div>
-      <Home/>
-    </div>
+  return (
+   <RoutesMap/>
   )
 }
 
