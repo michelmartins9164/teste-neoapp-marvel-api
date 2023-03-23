@@ -3,7 +3,7 @@ import config from "../config/config";
 import md5 from "md5";
 
 const api = axios.create({
-    baseURL: "http://gateway.marvel.com/v1/public",
+    baseURL: "https://gateway.marvel.com/v1/public",
 })
 
 const hash = md5(config.date + config.PrivateKey + config.PublicKey);
