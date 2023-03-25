@@ -4,11 +4,11 @@ export const HeaderContainer = styled.div `
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80px;
+    height: 5rem;
     position: relative;
     .logo {
         position: absolute;
-        left: 10px;
+        left: .625rem;
         top: 50%;
         transform: translate(0%, -50%);
     };
