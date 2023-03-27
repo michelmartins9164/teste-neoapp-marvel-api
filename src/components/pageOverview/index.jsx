@@ -8,8 +8,7 @@ export default function PageOverview(props) {
     return (
         <Article key={props.id} className={props.id}>
             <div className='containerImageComic'>
-
-                <img src={`${props.image}.jpg`} alt={props.alt} className={'cover-comic'} />
+                <img src={`${props.image}`} alt={props.alt} className={'cover-comic'} />
             </div>
             <div className='containerTitleComic'>
                 <h1>{props.title}</h1>

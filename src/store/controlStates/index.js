@@ -1,58 +1,98 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { api, configUrl } from '../../services/api';
-const initialState = {
+    import { createSlice } from "@reduxjs/toolkit";
+
+    const initialState = {
     ListComics: {
         comics: [],
         comicId: [],
-        imageSrc: '',
-        titleComic: '',
-        priceComic: 0,
-        count: 0,
+        cart: [],
+        allItems: [],
+        validateReload: true,
         prev: 0,
         next: 5,
-        maxLimit: ''
-    }
-}
+        currentPage: "",
+        total: 0,
+    },
+    };
 
-const ListComics = createSlice({
+    const ListComics = createSlice({
     name: "comics",
     initialState,
     reducers: {
         getAllComics: (state, actions) => {
-            state.ListComics.comics = actions.payload;
+        state.ListComics.comics = actions.payload;
+        
         },
         getComicId: (state, actions) => {
-            state.ListComics.comicId = actions.payload;
-            console.log(state.ListComics.comicId);
-        },
-        getImage: (state, actions) => {
-            state.ListComics.imageSrc = actions.payload;
-        },
-        getTitle: (state, actions) => {
-            state.ListComics.titleComic = actions.payload;
-            console.log(state.ListComics.titleComic);
-        },
-        getPrice: (state, actions) => {
-            state.ListComics.priceComic = actions.payload;
-            console.log(state.ListComics.priceComic);
+        let newComic = {
+            title: actions.payload.title,
+            id: actions.payload.id,
+            price: actions.payload.prices[0].price,
+            image: `${actions.payload.thumbnail.path}.jpg`,
+        };
+        state.ListComics.comicId = newComic;
         },
         prevPage: (state) => {
-            if(state.ListComics.prev > 5 ) {
-                state.ListComics.next = state.ListComics.next - 5
-                state.ListComics.prev = state.ListComics.prev - 5
-                state.ListComics.maxLimit = ""
-            } else state.ListComics.maxLimit = "Inicio";
-            
+        if (state.ListComics.prev > 0) {
+            state.ListComics.next = state.ListComics.next - 5;
+            state.ListComics.prev = state.ListComics.prev - 5;
+            state.ListComics.maxLimit = "";
+        } else state.ListComics.currentPage = "Inicio";
         },
         nextPage: (state) => {
-            if(state.ListComics.next < state.ListComics.comics.length ) {
-                state.ListComics.next = state.ListComics.next + 5
-                state.ListComics.prev = state.ListComics.prev + 5
-                state.ListComics.maxLimit = ""
-            } else state.ListComics.maxLimit = "ops"
-        }
-    }
-})
+        if (state.ListComics.next < state.ListComics.comics.length) {
+            state.ListComics.next = state.ListComics.next + 5;
+            state.ListComics.prev = state.ListComics.prev + 5;
+            state.ListComics.maxLimit = "";
+        } else state.ListComics.currentPage = "ops";
+        },
+        setCart: (state, actions) => {
+        let itemCart = {
+            ...actions.payload,
+            amount: 1,
+        };
+        state.ListComics.cart = [...state.ListComics.cart, itemCart];
 
-export const { getAllComics, getComicId, getImage, getTitle, getPrice, prevPage, nextPage } = ListComics.actions;
-export const ComicsSlice = ListComics.reducer;
+        state.ListComics.allItems = JSON.parse(
+            JSON.stringify(state.ListComics.cart)
+        );
+        const filterComics = new Set();
+        const filter = state.ListComics.allItems.filter((comic) => {
+            const duplicatedComic = filterComics.has(comic.id);
+            filterComics.add(comic.id);
+            return !duplicatedComic;
+        });
+        state.ListComics.allItems = filter;
+        },
+        deleteItemInCart: (state, actions) => {
+        state.ListComics.allItems = actions.payload;
+        },
+        increment: (state, actions) => {
+        let qtd = JSON.parse(
+            JSON.stringify(state.ListComics.allItems[actions.payload].amount)
+        );
+        state.ListComics.allItems[actions.payload].amount = qtd + 1;
+    },
+    decrement: (state, actions) => {
+        let qtd = JSON.parse(
+            JSON.stringify(state.ListComics.allItems[actions.payload].amount)
+        );
+        if (state.ListComics.allItems[actions.payload].amount <= 1) {
+            return;
+        } else {
+            state.ListComics.allItems[actions.payload].amount = qtd - 1;
+        }
+        },
+    },
+    });
+
+    export const {
+    getAllComics,
+    getComicId,
+    prevPage,
+    nextPage,
+    setCart,
+    deleteItemInCart,
+    increment,
+    decrement,
+    } = ListComics.actions;
+    export const ComicsSlice = ListComics.reducer;

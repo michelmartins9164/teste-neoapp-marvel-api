@@ -2,16 +2,10 @@ import styled from "styled-components";
 export const HeaderContainer = styled.div `
     background-color: #000;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    height: 5rem;
+    height: 8rem;
     position: relative;
-    .logo {
-        position: absolute;
-        left: .625rem;
-        top: 50%;
-        transform: translate(0%, -50%);
-    };
 
     h1 {
         text-align: center;
@@ -20,3 +14,16 @@ export const HeaderContainer = styled.div `
         font-size: 2rem;
     }
 `;
+
+export const ContainerLinks = styled.div `
+display: flex;
+justify-content: space-between;
+flex-direction: column;
+row-gap: 1rem;
+    a {
+        text-decoration: none;
+        font-size: 1.2rem;
+        color: white;
+        margin-left: 1rem;
+    }
+`

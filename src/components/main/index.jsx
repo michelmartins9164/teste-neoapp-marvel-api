@@ -4,20 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import PageOverview from '../../components/pageOverview/index.jsx';
 import api, { configUrl } from '../../services/api.js';
 import { getAllComics, nextPage, prevPage } from '../../store/controlStates/index.js';
-import { ContainerComics } from './styles.js';
+import { ContainerButtons, ContainerComics } from './styles.js';
 
 function Main() {
     let data = [];
-
     const dispatch = useDispatch();
 
     const comicsList = useSelector((state) => {
         return state.ListComics.comics;
     });
-    
-    
+
+
     const limit = useSelector((state) => {
-        return state.ListComics.maxLimit;
+        return state.ListComics.currentPage;
     });
 
     const prev = useSelector((state) => {
@@ -34,6 +33,7 @@ function Main() {
     function currentPagePrev() {
         dispatch(prevPage())
     }
+
     useEffect(() => {
         api.get(`/comics?${configUrl}`).then((res) => {
             data = Object.values(res.data.data);
@@ -42,12 +42,15 @@ function Main() {
                 console.log(error)
             })
             .finally(() => {
-                dispatch(getAllComics(data[4].sort()))
+                dispatch(getAllComics(data[4]))
             })
     }, [])
     return (
         <main>
+            
             <ContainerComics className="list-comics">
+                <div className='shadow'>
+                </div>
                 {
                     comicsList.slice(prev, next).map((comic) => {
                         const { id, title, prices, thumbnail } = comic;
@@ -56,17 +59,20 @@ function Main() {
                                 <PageOverview
                                     key={id}
                                     id={id} title={title}
-                                    image={thumbnail.path}
+                                    image={`${thumbnail.path}.jpg`}
                                     price={prices[0]['price']} />
                             </article>
                         )
                     })
                 }
-                <button onClick={currentPagePrev}>Prev</button>
-                <button onClick={currentPageNext}>Next</button>
+                <ContainerButtons>
+                    <button onClick={currentPagePrev}></button>
+                    <button onClick={currentPageNext}></button>
+                </ContainerButtons>
                 <p>{limit}</p>
             </ContainerComics>
         </main>
+
     )
 }
 
